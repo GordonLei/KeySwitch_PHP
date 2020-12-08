@@ -23,26 +23,26 @@ CREATE TABLE IF NOT EXISTS Owns(
 CREATE TABLE IF NOT EXISTS Keyboard(
     keyboard_name VARCHAR(32),
     keyboard_type VARCHAR(32),
-    mounting varchar(16),
-    color varchar(16),
+    mounting varchar(32),
+    color varchar(32),
     PRIMARY KEY (keyboard_name,color)
 );
 
 CREATE TABLE IF NOT EXISTS Switch(
-    switch_name VARCHAR (16),
-    switch_type VARCHAR (16),
-    actuation_distance INT,
-    bottom_out_distance INT,
-    operating_force INT,
-    bottom_out_force INT, 
-    manufacturer VARCHAR (16),
+    switch_name VARCHAR (32),
+    switch_type VARCHAR (32),
+    actuation_distance NUMERIC(3,1),
+    bottom_out_distance NUMERIC(3,1),
+    operating_force NUMERIC(3,1),
+    bottom_out_force NUMERIC(3,1), 
+    manufacturer VARCHAR (32),
     pins INT,
-    PRIMARY KEY (manufacturer, switch_name)
+    PRIMARY KEY (switch_name)
 );
 
 CREATE TABLE  IF NOT EXISTS KeyCap(
     set_name VARCHAR (32),
-    cap_manufacturer VARCHAR (16),
+    cap_manufacturer VARCHAR (32),
     cap_profile VARCHAR (6),
     material VARCHAR (3),
     PRIMARY KEY (set_name)
@@ -50,7 +50,7 @@ CREATE TABLE  IF NOT EXISTS KeyCap(
 
 CREATE TABLE  IF NOT EXISTS Designer(
     designer_id INT,
-    designer_name VARCHAR(16), 
+    designer_name VARCHAR(32), 
     designer_description VARCHAR (255),
     PRIMARY KEY (designer_id)
 );
@@ -58,7 +58,7 @@ CREATE TABLE  IF NOT EXISTS Designer(
 CREATE TABLE IF NOT EXISTS Designed_Keyboard(
     designer_id INT,
     keyboard_name VARCHAR(32),
-    color varchar(16),
+    color varchar(32),
     FOREIGN KEY (keyboard_name, color) references Keyboard(keyboard_name,color), 
     FOREIGN KEY (designer_id) references Designer(designer_id),
     PRIMARY KEY (keyboard_name, color, designer_id)
@@ -92,15 +92,14 @@ CREATE TABLE IF NOT EXISTS Build(
     lube VARCHAR(32),
     list_id INT,
     keyboard_name VARCHAR(32),
-    color varchar(16),
-    switch_name VARCHAR (16),
-    manufacturer VARCHAR (16),
+    color varchar(32),
+    switch_name VARCHAR (32),
     set_name VARCHAR (32),
     foreign key (list_id) references List(list_id),
     foreign key (keyboard_name, color) references Keyboard(keyboard_name,color),
-    foreign key (switch_name, manufacturer) references Switch(switch_name,manufacturer),
+    foreign key (switch_name) references Switch(switch_name),
     foreign key (set_name) references KeyCap(set_name),
-    PRIMARY KEY (list_id, build_id, keyboard_name, color, switch_name, manufacturer, set_name, plate, layout, stabilizer, lube)
+    PRIMARY KEY (list_id, build_id, keyboard_name, color, switch_name, set_name, plate, layout, stabilizer, lube)
 );
 
 
@@ -109,8 +108,8 @@ Keyboard's data members
 
 keyboard_name VARCHAR(32),
 keyboard_type VARCHAR(32),
-mounting varchar(16),
-color varchar(16),
+mounting varchar(32),
+color varchar(32),
 */
 
 INSERT INTO Keyboard (keyboard_name,keyboard_type, mounting,color)
@@ -163,20 +162,89 @@ INSERT INTO Keyboard (keyboard_name,keyboard_type, mounting,color)
 /*
 KeyCap 
 
-CREATE TABLE  IF NOT EXISTS KeyCap(
     set_name VARCHAR (32),
-    cap_manufacturer VARCHAR (16),
+    cap_manufacturer VARCHAR (32),
     cap_profile VARCHAR (6),
     material VARCHAR (3),
     PRIMARY KEY (set_name)
-);
+
 */
 
 INSERT INTO KeyCap(set_name, cap_manufacturer, cap_profile, material)
     VALUES 
         ('GMK Olivia++', 'GMK', 'Cherry', 'ABS'), 
         ('GMK Mizu', 'GMK', 'Cherry', 'ABS'), 
-        ('GMK Olivia++', 'GMK', 'Cherry', 'ABS'), 
         ('KAT Milkshake', 'Keyreative', 'KAT', 'ABS'),
+        ('GMK Metropolis', 'GMK', 'Cherry', 'ABS'),
+        ('GMK Alter', 'GMK', 'Cherry', 'ABS'),
+        ('GMK Bento', 'GMK', 'Cherry', 'ABS'),
+        ('GMK Taro', 'GMK', 'Cherry', 'ABS'),
+        ('Infinikey Café', 'Infinikey', 'Cherry', 'PBT'),
+        ('Infinikey Team Liquid', 'Infinikey', 'Cherry', 'PBT'),
+        ('DSA Mafic Girl r2', 'Infinikey', 'DSA', 'PBT')
     ON CONFLICT DO NOTHING; 
 
+/*
+Switch
+    switch_name VARCHAR (32),
+    switch_type VARCHAR (32),
+    actuation_distance INT,
+    bottom_out_distance INT,
+    operating_force INT,
+    bottom_out_force INT, 
+    manufacturer VARCHAR (32),
+    pins INT,
+*/
+INSERT INTO Switch(switch_name, switch_type, actuation_distance, bottom_out_distance, operating_force, bottom_out_force, manufacturer, pins)
+    VALUES 
+        ('Cherry Red', 'Linear', 2, 4, 45, 75, 'Cherry', 5), 
+        ('Cherry Black', 'Linear', 2, 4, 60, 85, 'Cherry', 5),
+        ('Cherry Brown', 'Tactile', 2, 4, 55, 60, 'Cherry', 5),
+        ('Cherry Blue', 'Clicky', 2, 4, 60, 60, 'Cherry', 5),
+        ('Cherry Clear', 'Tactile', 2, 4, 65, 95, 'Cherry', 5),
+        ('Gateron Red', 'Linear', 2, 4, 45, 55, 'Gateron', 5),
+        ('Gateron Black', 'Linear', 2, 4, 60, 75, 'Gateron', 5),
+        ('Gateron Brown', 'Tactile', 2, 4, 45, 55, 'Gateron', 5),
+        ('Gateron Blue', 'Clicky', 2, 4, 55, 60, 'Gateron', 5),
+        ('Gateron Clear', 'Linear', 2, 4, 35, 40, 'Gateron', 5),
+        ('BOX Navy', 'Clicky', 2, 3.6, 60, 90, 'Kailh', 3),
+        ('BOX Jade', 'Clicky', 2, 3.6, 50, 60, 'Kailh', 3),
+        ('NovelKeys Cream', 'Linear', 2, 4, 55, 70, 'Kailh', 5),
+        ('NovelKeys Cream', 'Linear', 2, 4, 55, 70, 'Kailh', 5)
+    ON CONFLICT DO NOTHING; 
+/*
+Designer
+    designer_id INT,
+    designer_name VARCHAR(32), 
+    designer_description VARCHAR (255),
+    PRIMARY KEY (designer_id)
+*/
+INSERT INTO Designer(designer_id, designer_name, designer_description)
+    VALUES 
+        (1, 'NovelKeys', "They make keyboards and sell keycap sets!"), 
+        (2, 'RamaWorks', "They make keyboards!")
+
+    ON CONFLICT DO NOTHING; 
+
+
+
+/*
+CREATE TABLE IF NOT EXISTS Designed_Keyboard(
+    designer_id INT,
+    keyboard_name VARCHAR(32),
+    color varchar(32),
+    FOREIGN KEY (keyboard_name, color) references Keyboard(keyboard_name,color), 
+    FOREIGN KEY (designer_id) references Designer(designer_id),
+    PRIMARY KEY (keyboard_name, color, designer_id)
+);
+*/
+
+/*
+CREATE TABLE IF NOT EXISTS Designed_KeyCap(
+    designer_id INT,
+    set_name VARCHAR (32),
+    FOREIGN KEY (set_name) references KeyCap(set_name), 
+    FOREIGN KEY (designer_id) references Designer(designer_id),
+    PRIMARY KEY (set_name, designer_id)
+);
+*/
