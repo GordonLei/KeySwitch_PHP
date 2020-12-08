@@ -15,8 +15,12 @@ CREATE TABLE  IF NOT EXISTS List(
 CREATE TABLE IF NOT EXISTS Owns(
     user_id  INT, 
     list_id INT, 
-    foreign key (user_id) references Users(user_id),
-    foreign key (list_id) references List(list_id),
+    foreign key (user_id) references Users(user_id) 
+        on delete cascade                   
+        on update cascade,
+    foreign key (list_id) references List(list_id)
+        on delete cascade                
+        on update cascade,
     primary key(user_id, list_id)
 );
 
@@ -59,17 +63,25 @@ CREATE TABLE IF NOT EXISTS Designed_Keyboard(
     designer_id INT,
     keyboard_name VARCHAR(32),
     color varchar(32),
-    FOREIGN KEY (keyboard_name, color) references Keyboard(keyboard_name,color), 
-    FOREIGN KEY (designer_id) references Designer(designer_id),
-    PRIMARY KEY (keyboard_name, color, designer_id)
+    FOREIGN KEY (designer_id) references Designer(designer_id)
+        on delete cascade                
+        on update cascade,
+    FOREIGN KEY (keyboard_name, color) references Keyboard(keyboard_name,color)
+        on delete cascade                
+        on update cascade, 
+    PRIMARY KEY (designer_id, keyboard_name, color)
 );
 
 CREATE TABLE IF NOT EXISTS Designed_KeyCap(
     designer_id INT,
     set_name VARCHAR (32),
-    FOREIGN KEY (set_name) references KeyCap(set_name), 
-    FOREIGN KEY (designer_id) references Designer(designer_id),
-    PRIMARY KEY (set_name, designer_id)
+    FOREIGN KEY (designer_id) references Designer(designer_id)
+        on delete cascade                
+        on update cascade,
+    FOREIGN KEY (set_name) references KeyCap(set_name)
+        on delete cascade                
+        on update cascade, 
+    PRIMARY KEY (designer_id, set_name)
 );
 
 
@@ -79,8 +91,12 @@ CREATE TABLE IF NOT EXISTS user_comment(
     comment_text VARCHAR (255),
     user_id  INT, 
     list_id INT,
-    foreign key (list_id) references List(list_id),
-    foreign key (user_id) references Users(user_id),
+    foreign key (list_id) references List(list_id)
+        on delete cascade                
+        on update cascade,
+    foreign key (user_id) references Users(user_id)
+        on delete cascade                
+        on update cascade,
     PRIMARY KEY (comment_id, list_id, user_id, comment_text)
 );
 
@@ -95,10 +111,18 @@ CREATE TABLE IF NOT EXISTS Build(
     color varchar(32),
     switch_name VARCHAR (32),
     set_name VARCHAR (32),
-    foreign key (list_id) references List(list_id),
-    foreign key (keyboard_name, color) references Keyboard(keyboard_name,color),
-    foreign key (switch_name) references Switch(switch_name),
-    foreign key (set_name) references KeyCap(set_name),
+    foreign key (list_id) references List(list_id)
+        on delete cascade                
+        on update cascade,
+    foreign key (keyboard_name, color) references Keyboard(keyboard_name,color)
+        on delete cascade                
+        on update cascade,
+    foreign key (switch_name) references Switch(switch_name)
+        on delete cascade                
+        on update cascade,
+    foreign key (set_name) references KeyCap(set_name)
+        on delete cascade                
+        on update cascade,
     PRIMARY KEY (list_id, build_id, keyboard_name, color, switch_name, set_name, plate, layout, stabilizer, lube)
 );
 
@@ -115,7 +139,7 @@ color varchar(32),
 INSERT INTO Keyboard (keyboard_name,keyboard_type, mounting,color)
     VALUES 
         ('NK65 - Olivia Edition', '65%', 'Top Mount', 'Light'), 
-        ('NK65 - Olivia Edition', '65%', 'Top Mount', 'DARK'),
+        ('NK65 - Olivia Edition', '65%', 'Top Mount', 'Dark'),
         ('NK65', '65%', 'Top Mount', 'N65 Purple'),
         ('NK65', '65%', 'Top Mount', 'Biege'),
         ('NK65', '65%', 'Top Mount', 'Blumen'),
@@ -221,23 +245,52 @@ Designer
 */
 INSERT INTO Designer(designer_id, designer_name, designer_description)
     VALUES 
-        (1, 'NovelKeys', "They make keyboards and sell keycap sets!"), 
-        (2, 'RamaWorks', "They make keyboards!")
-
+        (1, 'NovelKeys', 'They make keyboards and sell keycap sets!'), 
+        (2, 'RamaWorks', 'They make keyboards!'),
+        (3, 'Olivia', 'They design keycaps!'),
+        (4, 'Rensuya', 'They design keycaps!'),
+        (5, 'biip', 'They design keycaps!'),
+        (6, 'Nephlock', 'They design keycaps!'),
+        (7, 'Sifo', 'They design keycaps!'),
+        (8, 'pwade3', 'They design keycaps!'),
+        (9, 'Langelandia', 'They design keycaps!'),
+        (10, 'minterly', 'They design keycaps!')
     ON CONFLICT DO NOTHING; 
 
-
-
 /*
-CREATE TABLE IF NOT EXISTS Designed_Keyboard(
+Designed_Keyboard
     designer_id INT,
     keyboard_name VARCHAR(32),
     color varchar(32),
-    FOREIGN KEY (keyboard_name, color) references Keyboard(keyboard_name,color), 
-    FOREIGN KEY (designer_id) references Designer(designer_id),
-    PRIMARY KEY (keyboard_name, color, designer_id)
-);
+
 */
+INSERT INTO Designed_Keyboard(designer_id, keyboard_name, color)
+    VALUES 
+        (1, 'NK65 - Olivia Edition', 'Light'), 
+        (1, 'NK65 - Olivia Edition', 'Dark'), 
+        (1, 'NK65', 'N65 Purple'), 
+        (1, 'NK65', 'Biege'), 
+        (1, 'NK65', 'Blumen'), 
+        (1, 'NK65', 'Frost'), 
+        (1, 'NK65', 'Smoke'), 
+        (1, 'NK65 - Milkshake Edition', 'E-White'), 
+        (1, 'NK65 - RPF Edition', 'Translucent Green'), 
+        (2, 'Kara', 'Noct'),
+        (2, 'Kara', 'Moon'),
+        (2, 'Kara', 'Soya'),
+        (2, 'Kara', 'Iced'),
+        (2, 'Kara', 'Azur'),
+        (2, 'Kara', 'Haze'),
+        (2, 'U80-A SEQ2',  'Kuro Stealth'),
+        (2, 'U80-A SEQ2', 'Moon Stealth'),
+        (2, 'U80-A SEQ2', 'Sage'),
+        (2, 'U80-A SEQ2', 'Yolk'),
+        (2, 'U80-A SEQ2', 'Soya'),
+        (2, 'Jules', 'Kuro'),
+        (2, 'Jules', 'Navy'),
+        (2, 'Jules', 'Halt'),
+        (2, 'Jules', 'Ouro')
+    ON CONFLICT DO NOTHING; 
 
 /*
 CREATE TABLE IF NOT EXISTS Designed_KeyCap(
@@ -248,3 +301,17 @@ CREATE TABLE IF NOT EXISTS Designed_KeyCap(
     PRIMARY KEY (set_name, designer_id)
 );
 */
+
+INSERT INTO Designed_KeyCap(designer_id, set_name)
+    VALUES 
+        (3,'GMK Olivia++'), 
+        (4,'GMK Mizu'), 
+        (5,'KAT Milkshake'),
+        (6,'GMK Metropolis'),
+        (7,'GMK Alter'),
+        (5,'GMK Bento'),
+        (8,'GMK Taro'),
+        (9,'Infinikey Café'),
+        (1,'Infinikey Team Liquid'),
+        (10,'DSA Mafic Girl r2')
+    ON CONFLICT DO NOTHING; 
