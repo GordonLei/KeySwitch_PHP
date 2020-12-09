@@ -45,6 +45,38 @@
             ?>
         </select>
         <br>
+
+        Plate
+        <select name="switch">
+            <option value="Aluminum"> Aluminum </option>
+            <option value="Brass"> Brass</option>
+            <option value="Carbon Fibre"> Carbon Fibre </option>
+            <option value="FR4"> FR4 </option>
+            <option value="Polycarbonate"> Polycarbonate </option>
+        </select>
+
+        <br>
+
+        Stabilizer
+        <select name="stabilizer">
+            <option value="c3 stabilizer"> c3 stabilizer</option>
+            <option value="cherry plate mount"> cherry plate mount</option>
+            <option value="cherry screw in"> cherry screw in</option>
+            <option value="zeal stabilizer"> zeal stabilizer </option>
+            <option value="durock stabilizer"> durock stabilizer </option>
+        </select>
+
+        <br>
+
+        Lube
+        <select name="lube">
+            <option value="Krytox GPL 205 GRADE 0"> Krytox GPL 205 GRADE 0 </option>
+            <option value="Tribosys 3203"> Tribosys 3203 </option>
+            <option value="Tribosys 3204"> Tribosys 3204 </option>
+        </select>
+
+
+        <br>
         Switch: 
         <select name="switch">
             <?php
@@ -72,6 +104,9 @@
                    
             ?>
         </select>
+        <br>
+        <label for="description">Description:</label><br>
+        <input type="text" id="description" name="description"><br>
     </form>
 
 
