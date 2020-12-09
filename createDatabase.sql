@@ -1,20 +1,19 @@
 CREATE TABLE IF NOT EXISTS Users(
-    user_id  INT, 
-    username varchar(255),
-    user_password varchar(255),
+    user_id  serial  NOT NULL,  
+    username varchar(255) NOT NULL,
+    user_password varchar(255) NOT NULL,
     primary key(user_id)
     );
 
 CREATE TABLE  IF NOT EXISTS List(
-    list_id INT, 
-    description VARCHAR(255),
-    rating int not NULL, 
+    list_id serial NOT NULL, 
+    description VARCHAR(255), 
     primary key(list_id)
 );
 
 CREATE TABLE IF NOT EXISTS Owns(
-    user_id  INT, 
-    list_id INT, 
+    user_id  serial  NOT NULL , 
+    list_id serial NOT NULL , 
     foreign key (user_id) references Users(user_id) 
         on delete cascade                   
         on update cascade,
@@ -25,44 +24,44 @@ CREATE TABLE IF NOT EXISTS Owns(
 );
 
 CREATE TABLE IF NOT EXISTS Keyboard(
-    keyboard_name VARCHAR(32),
-    keyboard_type VARCHAR(32),
+    keyboard_name VARCHAR(32) NOT NULL,
+    keyboard_type VARCHAR(32) NOT NULL,
     mounting varchar(32),
     color varchar(32),
     PRIMARY KEY (keyboard_name,color)
 );
 
 CREATE TABLE IF NOT EXISTS Switch(
-    switch_name VARCHAR (32),
-    switch_type VARCHAR (32),
+    switch_name VARCHAR (32) NOT NULL,
+    switch_type VARCHAR (32) NOT NULL,
     actuation_distance NUMERIC(3,1),
     bottom_out_distance NUMERIC(3,1),
     operating_force NUMERIC(3,1),
     bottom_out_force NUMERIC(3,1), 
-    manufacturer VARCHAR (32),
+    manufacturer VARCHAR (32) NOT NULL,
     pins INT,
     PRIMARY KEY (switch_name)
 );
 
 CREATE TABLE  IF NOT EXISTS KeyCap(
-    set_name VARCHAR (32),
-    cap_manufacturer VARCHAR (32),
-    cap_profile VARCHAR (6),
-    material VARCHAR (3),
+    set_name VARCHAR (32) NOT NULL,
+    cap_manufacturer VARCHAR (32) NOT NULL,
+    cap_profile VARCHAR (6) NOT NULL,
+    material VARCHAR (3) NOT NULL,
     PRIMARY KEY (set_name)
 );
 
 CREATE TABLE  IF NOT EXISTS Designer(
-    designer_id INT,
-    designer_name VARCHAR(32), 
+    designer_id serial NOT NULL ,
+    designer_name VARCHAR(32) NOT NULL, 
     designer_description VARCHAR (255),
     PRIMARY KEY (designer_id)
 );
 
 CREATE TABLE IF NOT EXISTS Designed_Keyboard(
-    designer_id INT,
-    keyboard_name VARCHAR(32),
-    color varchar(32),
+    designer_id serial NOT NULL  ,
+    keyboard_name VARCHAR(32) NOT NULL,
+    color varchar(32) NOT NULL,
     FOREIGN KEY (designer_id) references Designer(designer_id)
         on delete cascade                
         on update cascade,
@@ -73,8 +72,8 @@ CREATE TABLE IF NOT EXISTS Designed_Keyboard(
 );
 
 CREATE TABLE IF NOT EXISTS Designed_KeyCap(
-    designer_id INT,
-    set_name VARCHAR (32),
+    designer_id serial  NOT NULL ,
+    set_name VARCHAR (32) NOT NULL,
     FOREIGN KEY (designer_id) references Designer(designer_id)
         on delete cascade                
         on update cascade,
@@ -87,10 +86,10 @@ CREATE TABLE IF NOT EXISTS Designed_KeyCap(
 
 
 CREATE TABLE IF NOT EXISTS user_comment(
-    comment_id INT, 
+    comment_id serial NOT NULL , 
     comment_text VARCHAR (255),
-    user_id  INT, 
-    list_id INT,
+    user_id  serial NOT NULL , 
+    list_id serial NOT NULL ,
     foreign key (list_id) references List(list_id)
         on delete cascade                
         on update cascade,
@@ -101,16 +100,16 @@ CREATE TABLE IF NOT EXISTS user_comment(
 );
 
 CREATE TABLE IF NOT EXISTS Build(
-    build_id INT,
+    build_id serial NOT NULL ,
     plate VARCHAR(32),
     layout varchar(32),
     stabilizer VARCHAR(32),
     lube VARCHAR(32),
     list_id INT,
-    keyboard_name VARCHAR(32),
-    color varchar(32),
-    switch_name VARCHAR (32),
-    set_name VARCHAR (32),
+    keyboard_name VARCHAR(32) NOT NULL,
+    color varchar(32) NOT NULL,
+    switch_name VARCHAR (32) NOT NULL,
+    set_name VARCHAR (32) NOT NULL,
     foreign key (list_id) references List(list_id)
         on delete cascade                
         on update cascade,
@@ -315,3 +314,7 @@ INSERT INTO Designed_KeyCap(designer_id, set_name)
         (1,'Infinikey Team Liquid'),
         (10,'DSA Mafic Girl r2')
     ON CONFLICT DO NOTHING; 
+/*
+CREATE USER testUser WITH ENCRYPTED PASSWORD 'abc123';
+    GRANT ALL PRIVILEGES ON DATABASE KeySwitch TO testUser;
+*/
