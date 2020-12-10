@@ -1,10 +1,11 @@
 <html>
     <head>
     <title> </title>
+    <link rel="stylesheet" href="stylesheet.css">
     </head>
 
     <body>
-    <form action="updateform.php" method="post">
+    <form action="add_data.php" method="post">
         Keyboard: 
         <select name="keyboard">
             <?php
@@ -15,6 +16,7 @@
                     $database = 'KeySwitch';
 
                     $PSQL_conn = pg_connect("host=localhost port=5432 dbname=$database user= $user password= $password");
+                    //$_SESSION['connection'] = $PSQL_conn;
 
                     if($PSQL_conn === false){
                         die("Could not connect to the database<br>");
@@ -37,7 +39,7 @@
                     //print_r($val);
 
                     while ($row = pg_fetch_assoc($result)) {
-                        echo '<option value="'.htmlspecialchars($row['keyboard_name']).'">';
+                        echo '<option value="'.htmlspecialchars($row['keyboard_name']).' '.htmlspecialchars($row['color']).'">';
                         echo htmlspecialchars($row['keyboard_name']).' '.htmlspecialchars($row['color']);
                         echo '</option>';
                     }
@@ -45,9 +47,17 @@
             ?>
         </select>
         <br>
+        
+        Layout
+        <select name="layout">
+            <option value="ansi"> ansi </option>
+            <option value="iso"> iso </option>
 
+        </select>
+
+        <br>
         Plate
-        <select name="switch">
+        <select name="plate">
             <option value="Aluminum"> Aluminum </option>
             <option value="Brass"> Brass</option>
             <option value="Carbon Fibre"> Carbon Fibre </option>
@@ -92,24 +102,59 @@
         </select>
         <br>
         KeyCap: 
-        <select name="switch">
+        <select name="keycap">
             <?php
-                    $result = pg_query($PSQL_conn, "SELECT * FROM KeyCap");
-
-                    while ($row = pg_fetch_assoc($result)) {
-                        echo '<option value="'.htmlspecialchars($row['set_name']).'">';
-                        echo htmlspecialchars($row['set_name']);
-                        echo '</option>';
-                    }
-                   
+                $result = pg_query($PSQL_conn, "SELECT * FROM KeyCap");
+                while ($row = pg_fetch_assoc($result)) {
+                    echo '<option value="'.htmlspecialchars($row['set_name']).'">';
+                    echo htmlspecialchars($row['set_name']);
+                    echo '</option>';
+                }   
             ?>
         </select>
         <br>
         <label for="description">Description:</label><br>
         <input type="text" id="description" name="description"><br>
+        <input type="submit" value="Submit">
     </form>
 
-
+    <?php
+    //display the list 
+        $result = pg_query($PSQL_conn, "SELECT * FROM list INNER JOIN build ON (list.list_id = build.list_id);");
+        if($result){
+            echo '<table>
+            <tr> 
+            <th>List ID</th>
+            <th>Build ID</th>
+            <th>Keyboard Name</th>
+            <th>Color</th>
+            <th>Layout</th>
+            <th>Plate</th>
+            <th>Stabilizer</th>
+            <th>Lube</th>
+            <th>Switch</th>
+            <th>KeyCap</th>
+            <th>Description</th> 
+            </tr>';
+            //echo '<tr>';
+            while ($row = pg_fetch_assoc($result)) {
+                echo '<tr>
+                <td>'.htmlspecialchars($row['list_id']).'</td>'.
+                '<td>'.htmlspecialchars($row['build_id']).'</td>'.
+                '<td>'.htmlspecialchars($row['keyboard_name']).'</td>'.
+                '<td>'.htmlspecialchars($row['color']).'</td>'.
+                '<td>'.htmlspecialchars($row['layout']).'</td>'.
+                '<td>'.htmlspecialchars($row['plate']).'</td>'.
+                '<td>'.htmlspecialchars($row['stabilizer']).'</td>'.
+                '<td>'.htmlspecialchars($row['lube']).'</td>'.
+                '<td>'.htmlspecialchars($row['switch_name']).'</td>'.
+                '<td>'.htmlspecialchars($row['set_name']).'</td>'.
+                '<td>'.htmlspecialchars($row['description']).'</td>'.
+                '</tr>';
+            } 
+            echo '</table>';
+        }   
+    ?>
     
     </body>
 </html>
