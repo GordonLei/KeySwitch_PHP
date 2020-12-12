@@ -5,6 +5,13 @@
     </head>
 
     <body>
+    <a href = "index.php">Home page</a> <br>
+    <a href = "keyboard.php">Keyboards</a> <br>
+    <a href = "switch.php">Switches</a> <br>
+    <a href = "keycap.php">Keycap Sets</a> <br>
+    
+
+
     <form action="add_data.php" method="post">
         Keyboard: 
         <select name="keyboard">

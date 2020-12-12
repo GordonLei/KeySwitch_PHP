@@ -152,10 +152,10 @@ INSERT INTO Keyboard (keyboard_name,keyboard_type, mounting,color)
         ('7V', '75%', 'Leaf-spring PCB Mount', 'E-White'),
         ('7V', '75%', 'Leaf-spring PCB Mount', 'E-White'),
         ('No.2/65', '65%', 'Gasket Sandwich Mount', 'Black'),
-        ('No. 1/60 Rev. 1 ', '60%', 'Gasket Sandwich Mount', 'Black'),
-        ('No. 1/60 Rev. 1 ', '60%', 'Gasket Sandwich Mount', 'White'),
-        ('No. 2 Rev. 1 ', 'TKL', 'Gasket Sandwich Mount', 'Dark Gray'),
-        ('No. 2 Rev. 1 ', 'TKL', 'Gasket Sandwich Mount', 'Brass'),
+        ('No. 1/60 Rev. 1', '60%', 'Gasket Sandwich Mount', 'Black'),
+        ('No. 1/60 Rev. 1', '60%', 'Gasket Sandwich Mount', 'White'),
+        ('No. 2 Rev. 1', 'TKL', 'Gasket Sandwich Mount', 'Dark Gray'),
+        ('No. 2 Rev. 1', 'TKL', 'Gasket Sandwich Mount', 'Brass'),
         ('Tofu 60%', '60%', 'Tray Mount', 'Black'),
         ('Tofu 60%', '60%', 'Tray Mount', 'Silver'),
         ('Tofu 60%', '60%', 'Tray Mount', 'White'),
@@ -318,3 +318,126 @@ INSERT INTO Designed_KeyCap(designer_id, set_name)
 CREATE USER testUser WITH ENCRYPTED PASSWORD 'abc123';
     GRANT ALL PRIVILEGES ON DATABASE KeySwitch TO testUser;
 */
+
+/*
+CREATE TABLE IF NOT EXISTS Users(
+    user_id  serial  NOT NULL,  
+    username varchar(255) NOT NULL,
+    user_password varchar(255) NOT NULL,
+    primary key(user_id)
+    );
+*/
+
+INSERT INTO Users(username, user_password)
+    VALUES 
+        /*
+        the user_passwords would be hashed by PHP's hash function.
+        for the sake of inserting data into the table, they will be unhashed strings 
+        */
+        ('John Smith','password1'), 
+        ('Jack Smith','password2'), 
+        ('Joe Smith','password3')
+
+    ON CONFLICT DO NOTHING; 
+
+/*
+CREATE TABLE  IF NOT EXISTS List(
+    list_id serial NOT NULL, 
+    description VARCHAR(255), 
+    primary key(list_id)
+);
+*/
+INSERT INTO List(description)
+    VALUES 
+        ('Board 1'),
+        ('Board 2'),
+        ('Board 3'),
+        ('Board 4'),
+        ('Board 5')
+    ON CONFLICT DO NOTHING; 
+/*
+CREATE TABLE IF NOT EXISTS Owns(
+    user_id  serial  NOT NULL , 
+    list_id serial NOT NULL , 
+    foreign key (user_id) references Users(user_id) 
+        on delete cascade                   
+        on update cascade,
+    foreign key (list_id) references List(list_id)
+        on delete cascade                
+        on update cascade,
+    primary key(user_id, list_id)
+);
+*/
+
+INSERT INTO Owns(user_id,list_id)
+    VALUES 
+        (1,1),
+        (1,2),
+        (1,3),
+        (2,4),
+        (2,5)
+    ON CONFLICT DO NOTHING; 
+
+/*
+CREATE TABLE IF NOT EXISTS user_comment(
+    comment_id serial NOT NULL , 
+    comment_text VARCHAR (255),
+    user_id  serial NOT NULL , 
+    list_id serial NOT NULL ,
+    foreign key (list_id) references List(list_id)
+        on delete cascade                
+        on update cascade,
+    foreign key (user_id) references Users(user_id)
+        on delete cascade                
+        on update cascade,
+    PRIMARY KEY (comment_id, list_id, user_id, comment_text)
+);
+*/
+
+INSERT INTO user_comment(list_id, user_id, comment_text)
+    VALUES 
+        (1,2,'wow nice keyboard'),
+        (1,3,'cool beans'),
+        (2,3,'how much did this cost?'),
+        (3,2,'does doom run on this???'),
+        (4,1,'this is a comment'),
+        (5,1,'yes')
+    ON CONFLICT DO NOTHING; 
+
+/*
+CREATE TABLE IF NOT EXISTS Build(
+    build_id serial NOT NULL ,
+    plate VARCHAR(32),
+    layout varchar(32),
+    stabilizer VARCHAR(32),
+    lube VARCHAR(32),
+    list_id INT,
+    keyboard_name VARCHAR(32) NOT NULL,
+    color varchar(32) NOT NULL,
+    switch_name VARCHAR (32) NOT NULL,
+    set_name VARCHAR (32) NOT NULL,
+    foreign key (list_id) references List(list_id)
+        on delete cascade                
+        on update cascade,
+    foreign key (keyboard_name, color) references Keyboard(keyboard_name,color)
+        on delete cascade                
+        on update cascade,
+    foreign key (switch_name) references Switch(switch_name)
+        on delete cascade                
+        on update cascade,
+    foreign key (set_name) references KeyCap(set_name)
+        on delete cascade                
+        on update cascade,
+    PRIMARY KEY (list_id, build_id, keyboard_name, color, switch_name, set_name, plate, layout, stabilizer, lube)
+);
+*/
+
+INSERT INTO Build(list_id, keyboard_name, color, switch_name, set_name, plate, layout, stabilizer, lube)
+    VALUES 
+        (1,'NK65 - Olivia Edition', 'Light', 'BOX Navy','GMK Olivia++', 'brass', 'ansi', 'c3 stabilizer', 'Krytox GPL 205 GRADE 0'),
+        (2,'Jules', 'Kuro', 'Gateron Clear','GMK Mizu', 'aluminum', 'iso', 'cherry screw-in stabilizer', 'Krytox GPL 205 GRADE 0'),
+        (3,'Kara', 'Noct','NovelKeys Cream','GMK Bento', 'fr4', 'ansi', 'durok stabilizer', 'Tribosys 3203'),
+        (4,'7V', 'E-White','Cherry Black','GMK Taro', 'polycarbonate', 'ansi', 'durok stabilizer', 'Tribosys 3204'),
+        (5,'No. 2 Rev. 1','Dark Gray','NovelKeys Cream','GMK Alter', 'carbon fibre', 'ansi', 'c3 stabilizer', 'Tribosys 3203')
+
+    ON CONFLICT DO NOTHING; 
