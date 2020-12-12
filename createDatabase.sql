@@ -355,19 +355,7 @@ INSERT INTO List(description)
         ('Board 4'),
         ('Board 5')
     ON CONFLICT DO NOTHING; 
-/*
-CREATE TABLE IF NOT EXISTS Owns(
-    user_id  serial  NOT NULL , 
-    list_id serial NOT NULL , 
-    foreign key (user_id) references Users(user_id) 
-        on delete cascade                   
-        on update cascade,
-    foreign key (list_id) references List(list_id)
-        on delete cascade                
-        on update cascade,
-    primary key(user_id, list_id)
-);
-*/
+
 
 INSERT INTO Owns(user_id,list_id)
     VALUES 
@@ -378,21 +366,6 @@ INSERT INTO Owns(user_id,list_id)
         (2,5)
     ON CONFLICT DO NOTHING; 
 
-/*
-CREATE TABLE IF NOT EXISTS user_comment(
-    comment_id serial NOT NULL , 
-    comment_text VARCHAR (255),
-    user_id  serial NOT NULL , 
-    list_id serial NOT NULL ,
-    foreign key (list_id) references List(list_id)
-        on delete cascade                
-        on update cascade,
-    foreign key (user_id) references Users(user_id)
-        on delete cascade                
-        on update cascade,
-    PRIMARY KEY (comment_id, list_id, user_id, comment_text)
-);
-*/
 
 INSERT INTO user_comment(list_id, user_id, comment_text)
     VALUES 
@@ -403,34 +376,6 @@ INSERT INTO user_comment(list_id, user_id, comment_text)
         (4,1,'this is a comment'),
         (5,1,'yes')
     ON CONFLICT DO NOTHING; 
-
-/*
-CREATE TABLE IF NOT EXISTS Build(
-    build_id serial NOT NULL ,
-    plate VARCHAR(32),
-    layout varchar(32),
-    stabilizer VARCHAR(32),
-    lube VARCHAR(32),
-    list_id INT,
-    keyboard_name VARCHAR(32) NOT NULL,
-    color varchar(32) NOT NULL,
-    switch_name VARCHAR (32) NOT NULL,
-    set_name VARCHAR (32) NOT NULL,
-    foreign key (list_id) references List(list_id)
-        on delete cascade                
-        on update cascade,
-    foreign key (keyboard_name, color) references Keyboard(keyboard_name,color)
-        on delete cascade                
-        on update cascade,
-    foreign key (switch_name) references Switch(switch_name)
-        on delete cascade                
-        on update cascade,
-    foreign key (set_name) references KeyCap(set_name)
-        on delete cascade                
-        on update cascade,
-    PRIMARY KEY (list_id, build_id, keyboard_name, color, switch_name, set_name, plate, layout, stabilizer, lube)
-);
-*/
 
 INSERT INTO Build(list_id, keyboard_name, color, switch_name, set_name, plate, layout, stabilizer, lube)
     VALUES 
